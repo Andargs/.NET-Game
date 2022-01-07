@@ -1,0 +1,56 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+<h1>Welcome to the Image Guessing Game website</h1>
+
+<p>Navigate through this website by mainly using the navbar.<br>
+In order to play and access more pages, please register and log in.<br>
+After registering and logging in,
+you will be able to play games by creating a new game or joining and already existing game.</p><br>
+
+<h3>The rules of the game and how to play:</h3> 
+
+<p>The game is an image guessing game. There are two different roles in the game: Guesser and Proposer.</p>
+
+<p>As a Guesser, you will be shown an image, piece by piece, little by little.
+And your task as the Guesser will be to guess what the image shows.</p>
+
+<p>The Proposer gets to see the whole image,
+and when it is the Proposer's turn they will choose an image piece to show to the Guesser.<br>
+The Propser get's their turn if the Guesser guesses wrong three times in a row or
+if the Guesser requests to see one more image piece.</p>
+
+<p>Points system: The player will score more points
+the fewer image pieces have been shown when the Guesser guesses correctly what the image shows<br>
+The score for both the Proposer and the Guesser will be the 
+number of image pieces shown when the Guesser guesses correctly.</p>
+
+The game ends if:
+<ul>
+    <li>the Guesser guesses correctly what the image shows.</li>
+    <li>all images pieces are shown.</li>
+</ul><br>
+
+<h3>The four different game modes:</h3>
+
+<h4>Singleplayer</h4>
+<p>In singleplayer mode, you always play as the Guesser. The role of Proposer will be computer-controlled.
+In this game mode, the game ends if you click the "Quit"-button.
+To play a singleplayer game you have to create a singleplayer game. Singleplayer games cannot be joined.
+The other three game modes can be joined (if the game is not full of players) or created.</p>
+
+<h4>Twoplayer</h4>
+<p>In twoplayer mode, the person that creates the game will become the Proposer.
+The Proposer then has to wait for another person to join and become the Guesser.
+The game will start when both players are in the same game.</p>
+
+<h4>Multiplayer with human Proposer</h4>
+<p>In multiplayer with human Propser mode, the person that creates the game will become the Proposer.
+The Proposer then has to wait for other persons to join and become Guessers.
+The game will start when the game is full of players.</p>
+
+<h4>Multiplayer with computer-controlled Proposer</h4>
+<p>In multiplayer with computer-controlled Proposer mode, the role of Proposer will be computer-controlled.
+Every other person in the game will be Guessers. The game will start when the game is full of players.</p>

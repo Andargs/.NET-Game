@@ -1,0 +1,47 @@
+@page
+@model CustomImageModel
+@{
+    ViewData["Title"] = "UploadImage";
+}
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="text-center">
+    <h1 class="display-4">Upload Custom Image</h1>
+    <ul class="nav nav-pills justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" href="/CustomImage" class="button" style="font-size: 1.1em; font-weight: bold;">Automatic</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/CustomImageManual" class="button" style="font-size: 1.1em; font-weight: bold;">Manual</a>
+        </li>
+    </ul>
+    <br>
+    <form enctype="multipart/form-data" method="POST">
+        <dl>
+            <dt>
+                <label asp-for="@Model.FormFile">
+                    Upload Your File
+                </label>
+                <br>
+            </dt>
+            <br>
+            <dd>
+                <input asp-for="@Model.FormFile" type="file" />
+            </dd>
+        </dl>
+        Image Name:
+        <br>
+        <input type="text" asp-for="ImageName" placeholder="Choose Image Name" />
+        <br>
+        Amount of Slices:
+        <br>
+        <input type="radio" asp-for="strSlices" value=16 id="strSlices" name="strSlices" /> 16 Slices <br>
+        <input type="radio" asp-for="strSlices" value=25 id="strSlices" name="strSlices" /> 25 Slices <br>
+        <input type="radio" asp-for="strSlices" value=36 id="strSlices" name="strSlices" /> 36 Slices <br>
+        <input type="radio" asp-for="strSlices" value=49 id="strSlices" name="strSlices" /> 49 Slices <br>
+        <br>
+        <button type="submit" class="btn btn-primary">Upload Image</button>
+    </form>
+</div>
+
+}

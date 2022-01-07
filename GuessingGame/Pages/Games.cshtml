@@ -1,0 +1,63 @@
+@page
+@model GamesModel
+@{
+    ViewData["Title"] = "GameCreation";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Game History</h1>
+</div>
+@if (User.Identity.IsAuthenticated)
+                        {
+                        
+@if (Model.Games is null)
+{
+    <p>No games have been played!</p>
+}
+else
+{
+    <div class="text-center">
+    <ul class="nav nav-pills justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" href="./Leaderboards/10" class="button" style="font-size: 1.1em; font-weight: bold;">LeaderBoards</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="./PersonalGames" class="button" style="font-size: 1.1em; font-weight: bold;">Personal Leaderboard</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="./AIDataPage" class="button" style="font-size: 1.1em; font-weight: bold;">AIData</a>        
+        </li>
+    </ul>
+    <br>
+    <div id="CreateGame">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Players/Total Players</th>
+                    <th scope="col">players</th>
+                    <th scope="col">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var game in Model.Games)
+                    {
+                        <tr>
+                            <td scope="row">@game.Id</td>
+                            <td>@game.GameStatus</td>
+                            <td>@game.Players.Count / @game.numplayers </td>
+                            <td>@foreach(var player in game.Players)
+                                {
+                                    @player.Name <br>
+                                }
+                            </td>
+                            <td>@game.GameDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+}

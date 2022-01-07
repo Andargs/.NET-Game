@@ -1,0 +1,4 @@
+﻿<StaticWebAssets Version="1.0">
+  <ContentRoot BasePath="_content/GuessingGame" Path="c:\Users\chris\Development-GuessingGame\WethalPettersen-BakosLeirv-g-Chandler--greidDanielsen\GuessingGame\wwwroot\" />
+  <ContentRoot BasePath="/Identity" Path="C:\Users\chris\.nuget\packages\microsoft.aspnetcore.identity.ui\5.0.10\staticwebassets\V4\" />
+</StaticWebAssets>

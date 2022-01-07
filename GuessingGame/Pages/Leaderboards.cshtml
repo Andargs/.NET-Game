@@ -1,0 +1,72 @@
+@page "{num:int}"
+@model LeaderboardsModel
+@{
+    ViewData["Title"] = "Leaderboards";
+}
+@if (User.Identity.IsAuthenticated)
+                        {
+                        
+<div class="text-center">
+    <h1 class="display-4">Leaderboards</h1>
+    <ul class="nav nav-pills justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" href="/Leaderboards/10" style="font-size: 1.1em; font-weight: bold;">Top 10</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/Leaderboards/25" style="font-size: 1.1em; font-weight: bold;">Top 25</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/Leaderboards/50" style="font-size: 1.1em; font-weight: bold;">Top 50</a>
+        </li>
+    </ul>
+    <br>
+</div>
+@if (Model.Players is null)
+{
+    <p>No games have been played!</p>
+}
+else
+{
+    <div class="text-center">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Player Name</th>
+                <th scope="col">Score</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var player in Model.Players)
+                {
+                    @if (Model.items == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Model.items--;
+                    }
+                    <tr>
+                        <td>@(Model.index++)</td>
+                        <td>@player.Name</td>
+                        @if(player.Score >= 147)
+                        {
+                            <td>@player.Score <i class="bi-star-fill"></i> </td>   
+                        }
+                        @if(player.Score > 140 && player.Score < 147)
+                        {
+                            <td>@player.Score <i class="bi-star-half"></i> </td>   
+                        }
+                        @if(player.Score < 141)
+                        {
+                            <td>@player.Score <i class="bi-trash-fill"></i> </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+}

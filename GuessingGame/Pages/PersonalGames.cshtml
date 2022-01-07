@@ -1,0 +1,73 @@
+@page
+@model PersonalGamesModel
+@{
+    ViewData["Title"] = "PersonalGames";
+}
+
+@if (User.Identity.IsAuthenticated)
+                        {
+                        
+<div class="text-center">
+    <h1 class="display-4">Personal Games</h1>
+    <ul class="nav nav-pills justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" href="/Leaderboards/10" style="font-size: 1.1em; font-weight: bold;">Leaderboards</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/Games" style="font-size: 1.1em; font-weight: bold;">Game History</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="./AIDataPage" style="font-size: 1.1em; font-weight: bold;">AIData</a>
+        </li>
+    </ul>
+    <br>
+
+</div>
+@if (Model.Players is null)
+{
+    <p>No games have been played!</p>
+}
+else
+{
+    <div class="text-center">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Game Id</th>
+                <th scope="col">Player Name</th>
+                <th scope="col">Team</th>
+                <th scope="col">Proposer or Guesser</th>
+                <th scope="col">Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var player in Model.Players)
+                {
+                    <tr>
+                        <td>@player.GameId</td>
+                        <td>@player.Name</td>
+                        @if (@player.Team != Core.Domain.Player.Team.Blue || @player.Team != Core.Domain.Player.Team.Green ||
+                       @player.Team != Core.Domain.Player.Team.Red)
+                        {
+                            <td>No Team</td>
+                        }
+                        else
+                        {
+                            <td>Team ikke fiksa</td>
+                        }
+                        @if (@player.IsProposer)
+                        {
+                            <td>Proposer</td>
+                        }
+                        else
+                        {
+                            <td>Guesser</td>
+                        }
+                        <td>@player.Score</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+}

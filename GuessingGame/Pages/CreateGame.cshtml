@@ -1,0 +1,68 @@
+@page
+@model CreateGameModel
+@{
+    ViewData["Title"] = "GameCreation";
+}
+@if (User.Identity.IsAuthenticated)
+                        {
+                        
+@if(Model.Errors != null && Model.Errors.Length > 0){
+    foreach(var error in Model.Errors){
+        <div style="color: red;">
+            @error
+        </div>
+    }
+    @* The script below makes sure that the "number of players" input field is visible 
+    even after the page reload after the form is sent with none/bad input. *@
+    <script>
+        window.onload=show_num_player_input_field;
+        function show_num_player_input_field() {
+            if(document.getElementById("mp").checked == true || document.getElementById("omp").checked == true){
+                document.getElementById("label_num_players").style.visibility = "visible";
+                document.getElementById("num_players").style.visibility = "visible";
+            }
+        }
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Create Game</h1>
+</div>
+
+<div class="text-center">
+    <div id="CreateGame">
+        <form asp-action="CreateGame" id="f">
+            <fieldset class="form-group">
+            <div class="form-check">
+                <input type="radio" asp-for="mode" value="singleplayer" id="sp" name="mode" onclick="calculate_num_players(id)"/> 
+                <label for="sp">Singleplayer</label><br>
+            </div>
+            <div class="form-check">
+                <input type="radio" asp-for="mode" value="twoplayer" id="tp" name="mode" onclick="calculate_num_players(id)"/>
+                <label for="tp">Twoplayer</label><br>
+            </div>
+            <div class="form-check">
+                <input type="radio" asp-for="mode" value="multiplayer" id="mp" name="mode" onclick="calculate_num_players(id)" class="form-check-input"/>
+                <label for="mp" class="form-check-label">Multiplayer with human proposer</label><br>
+            </div>
+            <div class="form-check">
+                <input type="radio" asp-for="mode" value="omultiplayer" id="omp" name="mode" onclick="calculate_num_players(id)" class="form-check-input"/>
+                <label for="omp" class="form-check-label">Multiplayer with computer-controlled proposer</label><br><br> <!-- Multiplayer with oracle -->
+            </div>
+            <div class="form-group">
+                <label for="name">Display name: </label>
+                <input type="text" asp-for="Name" placeholder="Choose display name" id="name"/><br><br>
+            </div>
+            <label for="num_players" id="label_num_players" style="visibility: hidden;">
+            Number of Players
+            </label>
+            <input type="number" asp-for="players" placeholder="Number of players" id="num_players" min="1" max="6" style="visibility: hidden;"/><br><br>
+            <input type="submit" asp-page-handler="CreateGame" asp-route-Name="@Model.Name"
+                asp-route-singleplayer="@Model.mode" asp-route-twoplayer="@Model.mode"
+                asp-route-multiplayer="@Model.mode" asp-route-players="@Model.players">
+            
+            </fieldset>
+        </form>
+    </div>
+</div>
+}

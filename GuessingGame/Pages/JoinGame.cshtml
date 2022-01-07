@@ -1,0 +1,56 @@
+@page
+@model JoinGameModel
+@{
+    ViewData["Title"] = "Join Game";
+}
+@if (User.Identity.IsAuthenticated)
+                        {
+                        
+<div class="text-center">
+    <h1 class="display-4">Available Games</h1>
+</div>
+@if (Model.Games is null)
+{
+    <p>No games have been played!</p>
+}
+else
+{
+    <div class="text-center">
+    <br>
+    <br>
+    <div id="CreateGame">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Index</th>
+                    <th scope="col">GameId</th>
+                    <th scope="col">Players/Total Players</th>
+                    <th scope="col">Your Displayname</th>
+                    <th scope="col">Join Game</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var game in Model.Games)
+                    {
+                        @if (game.Players.Count < game.numplayers)
+                        {
+                            <tr>
+                                <td scope="row">@(Model.index++)</td>
+                                <td scope="row">@game.Id</td>
+                                <td scope="row">@game.Players.Count / @game.numplayers</td>
+                                <td>
+                                    <form asp-page-handler="join" method="post">
+                                        <input type="text" asp-for="Name" placeholder="Choose display name" />
+                                        <input asp-for="GameId" type="hidden" value="@game.Id">
+                                        <td><button type="submit" class="btn btn-default">Join Game</button></td>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+}

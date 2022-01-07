@@ -1,0 +1,73 @@
+@page
+@model AIDataModel
+@{
+    ViewData["Title"] = "AIPage";
+}
+
+@if (User.Identity.IsAuthenticated)
+                        {
+                        
+
+<div class="text-center">
+    <h1 class="display-4">AI Data</h1>
+    <ul class="nav nav-pills justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" href="./Leaderboards/10" style="font-size: 1.1em; font-weight: bold;">Leaderboards</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="./PersonalGames" style="font-size: 1.1em; font-weight: bold;">Personal Leaderboards</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="./Games" style="font-size: 1.1em; font-weight: bold;">Game History</a>
+        </li>
+    </ul>
+    <br>
+
+</div>
+@if (Model.AIData is null)
+{
+    <p>No games have been played!</p>
+}
+else
+{
+    <div class="text-center">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Game Id</th>
+                <th scope="col">Attempts</th>
+                <th scope="col">Optimal Tiles</th>
+                <th scope="col">Game finished</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Data in Model.AIData)
+                {
+                    <tr>
+                        <td scope="col">@Data.GameId</td>
+                        <td scope="col">@Data.Attempts</td>
+                        @if (Data.Correct)
+                        {
+                            @if(Data.OptimalUserTiles is not null)
+                            {
+                                <td scope="col">@Data.OptimalUserTiles.Replace(" ",",")</td>   
+                            } else
+                            {
+                                <td>No tiles were proposed.</td>
+                            }
+                            
+                            <td scope="col">@Data.Correct</td>
+                        }
+                        else
+                        {
+                            <td scope="col">Not Selected</td>
+                            <td scope="col">@Data.Correct</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+}
+}

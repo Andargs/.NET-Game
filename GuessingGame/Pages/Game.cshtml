@@ -1,0 +1,173 @@
+@page "{GameId:int}"
+@model GameModel
+@{
+    ViewData["Title"] = "Game page";
+}
+@if (User.Identity.IsAuthenticated)
+{
+    @if (Model.Game is null)
+    {
+        <div class="text-center">
+            <h1 class="display-4">Welcome</h1>
+            <p>No games to be played.</p>
+        </div>
+    }
+    else
+    {   <div class="Game" name="Game" id="@Model.Game.Id"></div>
+        if (Model.Game.GameStatus == Core.Domain.Game.GameStatus.New)
+        {
+            <h1>@Model.Game.GameStatus</h1>
+            <h4>The game is new. Processing...</h4>
+        }
+        else if (Model.Game.GameStatus == Core.Domain.Game.GameStatus.Created)
+        {
+            <div class="text-center">
+                <h1>Game @Model.Game.GameStatus</h1>
+                <p>Waiting for @(Model.Game.numplayers - @Model.Game.Players.Count()) players to join...</p>
+                <br>
+                <div class="spinner-border text-info" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <ul class="list-group">
+                    @foreach (var player in Model.Game.Players)
+                    {
+                        <li class="list-item">
+                            <p><i class="bi-controller"></i> @player.Name</p>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+        else if (Model.Game.GameStatus == Core.Domain.Game.GameStatus.Active)
+        {
+            if (Model.Player.IsProposer)
+            {
+                <h2>You are the proposer.</h2>
+                <p>Players in Game:</p>
+                @foreach (var player in @Model.Game.Players){<p>Name: @player.Name</p>}
+                @foreach (string path in @Model.Urls){<img class="guesser_view" src="@path" />}
+                <img onclick="showCoords(event)" class="proposer_view" src="@Model.imgproposerurl"/>
+                @if (@Model.Player == @Model.Game.Players[@Model.Game.ActivePlayerIndex])
+                {
+                    <p id="demo">X and Y coordinates.</p>
+                    <form asp-page-handler="propose" method="post">
+                        Click on a tile in the image to the left and then click the "Propose"-button:
+                        <input type="text" asp-for="imgMap" placeholder="X coords" value="@Model.imgMap" style="display: none;" />
+                        <input type="int" asp-for="X" placeholder="X coords" style="display: none;" />
+                        <input type="int" asp-for="Y" placeholder="Y coords" style="display: none;" />
+                        <input type="int" asp-for="Height" placeholder="Heigth of image" style="display: none;" value="396"/>
+                        <input type="int" asp-for="Width" placeholder="Width of image" style="display: none;" value="596"/>
+                        <input asp-for="CurrentPlayerName" type="hidden" value="@Model.Game.Players[@Model.Game.ActivePlayerIndex].Name">
+                        <button type="submit" class="btn btn-primary">Propose</button>
+                    </form>
+                }
+                else
+                {
+                    <p>It is Not your turn yet.</p>
+                    <p>@Model.Game.Players[@Model.Game.ActivePlayerIndex].Name is guessing</p>
+                    <p> Please Wait</p>
+                }
+            }
+            else 
+            {
+                <h2>Identify the object in the image:</h2>
+                @if (@Model.Player == @Model.Game.Players[@Model.Game.ActivePlayerIndex])
+                {
+                    <form asp-page-handler="guess" method="post">
+                        <label for="guess_input">Number of guesses available:
+                        @Model.Game.Players[@Model.Game.ActivePlayerIndex].AvailableAttempts<br>
+                        Place Your Guess:</label><br>
+                        <input asp-for="Guess" class="form-control" id="guess_input"/>
+
+                        <input asp-for="CurrentPlayerName" type="hidden"
+                            value="@Model.Game.Players[@Model.Game.ActivePlayerIndex].Name"><br>
+
+                        <button type="submit" class="btn btn-primary">Guess</button>
+
+                        <button style="background-color: green;" type="submit" asp-page-handler="ShowOneMore" class="btn btn-primary">
+                            Show one more!</button>
+                        
+                        <button style="background-color: red;" type="submit" asp-page-handler="Quit" class="btn btn-primary">
+                            QUIT!</button>
+                    </form>
+                }
+                else
+                {
+                    <p>It is not your turn yet. Please Wait!</p>
+                    <p>Player @Model.Game.Players[@Model.Game.ActivePlayerIndex].Name is taking their turn.</p>
+                }
+                @foreach (string path in @Model.Urls)
+                {
+                    <img class="GameImage" src="@path" />
+                }
+            }
+        }
+        else if (Model.Game.GameStatus == Core.Domain.Game.GameStatus.Solved)
+        {
+            if (Model.Player.IsProposer)
+            {
+                <h2>You are the proposer.</h2>
+                <p>Player @Model.Game.Players[@Model.Game.ActivePlayerIndex].Name guessed
+                @Model.Game.Image.ImageName and has won the
+                games. Thanks for playing!</p>
+            }
+            else
+            {   
+                if (@Model.Player == @Model.Game.Players[@Model.Game.ActivePlayerIndex])
+                {       
+                    <div class="text-center">
+                        <h2>Congratulations! You guessed correctly!</h2>
+                        <p>Here is the full image, please propose 7 tiles that you think would give you the best
+                        chance of identifying the object in the image.</p>
+                        <p id="demo">Please click on a tile and then click the "Propose"-button.</p>
+                        @if(Model.optimaltiles_error != ""){
+                            <p style="color: red;">@Model.optimaltiles_error</p>
+                        }
+                        @if(Model.Proposal != -1 && Model.optimaltiles_error == ""){
+                            <p style="color: green;">You successfully chose the tile @Model.Proposal. Please keep suggesting tiles.</p>
+                        }
+                        <form asp-page-handler="propose" method="post">
+                            <p>Number of proposals available: @Model.Game.Players[@Model.Game.ActivePlayerIndex].AvailableAttempts <br>
+                                Propose a tile:</p>
+                            <input type="text" asp-for="imgMap" placeholder="X coords" value="@Model.imgMap" style="display: none;" />
+                            <input type="int" asp-for="X" style="display: none;" id="X" />
+                            <input type="int" asp-for="Y" style="display: none;" id="Y" />
+                            <input asp-for="CurrentPlayerName" type="hidden" value="@Model.Game.Players[@Model.Game.ActivePlayerIndex].Name">
+                            <button type="submit" class="btn btn-primary">Propose</button><br><br>
+                        </form>
+                        <img onclick="showCoords(event)" id="singleplayer_suggest_tiles_img" src="@Model.imgproposerurl" />
+                    </div>
+                }
+                else
+                {
+                    <h2>Somebody else won.</h2>
+                }
+            }
+        }
+        else if (Model.Game.GameStatus == Core.Domain.Game.GameStatus.Finished)
+        {
+            if(Model.PlayerQuit){
+                <div class="text-center">
+                    <h1>You quit the game.</h1>
+                    <p>Here is the full version of the image that you had shown to you.</p>
+                    <img id="full_img_in_finished" src="@Model.imgfullurl"/>
+                </div>
+            }
+            else
+            {
+                <div class="text-center">
+                    <h1>Congratulations! You finished the game.</h1>
+                    <p>Your score: @Model.Game.Players[0].Score</p>
+                    <p>Here is the full version of the image that you had shown to you.</p>
+                    <img id="full_img_in_finished" src="@Model.imgfullurl"/>
+                </div>
+            }
+        }
+        else 
+        {
+            <p>Error: Invalid GameStatus</p>
+        }
+    }
+}
+<script src="~/lib/signalr.js"></script>
+<script src="~/js/notification.js"></script>

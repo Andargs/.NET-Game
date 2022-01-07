@@ -1,0 +1,57 @@
+@page
+@model CustomImageManualModel
+@{
+    ViewData["Title"] = "UploadImageManual";
+}
+@if (User.Identity.IsAuthenticated)
+{
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js%22%3E"></script>
+    <div class="text-center">
+        <h1 class="display-4">Upload Custom Image</h1>
+        <ul class="nav nav-pills justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link" href="/CustomImage" style="font-size: 1.1em; font-weight: bold;">Automatic</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/CustomImageManual" style="font-size: 1.1em; font-weight: bold;">Manual</a>
+            </li>
+        </ul>
+        <div class="text-center">
+            <div class="row">
+                <ol>
+                    <li>Accepted inputs for the manual slicer are vertical and horizintal stripes.</li>
+                    <li>Drawing close to the border may result in the line "boucing".</li>
+                    <li>The lines needs to be "closed" by either the image border or another line, having a gap in line will not yield good results (may crash).</li>
+                    <li>To be able to draw on the entire canvas may require you to scroll either up or down on the page depending on where the line cuts off.</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="form-input">
+            <form enctype="multipart/form-data" method="POST">
+            <p id="cordi"></p>
+            <p id="X"></p>
+            <p id="Y"></p>
+                <canvas id="canv" width="740" height="420" onmousemove="showCoords(event)"></canvas>
+                <dl>
+                    <dt>
+                        <label asp-for="@Model.FormFile">
+                            Upload Your File
+                        </label>
+                        <br>
+                    </dt>
+                    <br>
+                    <dd>
+                        <input asp-for="@Model.FormFile" type="file" onchange="showPreview(event);" />
+                    </dd>
+                </dl>
+                <input asp-for="@Model.imageData" type="hidden" />
+                Image Name:
+                <br>
+                <input type="text" asp-for="ImageName" placeholder="Choose Image Name" />
+                <br>
+                <button type="submit" class="btn btn-primary" onclick="send();">Upload Image</button>
+            </form>
+        </div>
+    </div>
+}
